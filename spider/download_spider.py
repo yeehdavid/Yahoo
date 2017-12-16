@@ -238,8 +238,7 @@ def do_the_task(task_datetime):
         succ = round((n/total),3)*100
         cur.execute("UPDATE main_task SET success=%s;", succ)
         cur.connection.commit()
-        if c == 'AAOI':
-            break
+        
         try:
             stamp = codes_stamp[codes_stamp.code == c]
             temp = len(stamp.index) / len(stamp.index)  # 测试如果长度为零则报错
