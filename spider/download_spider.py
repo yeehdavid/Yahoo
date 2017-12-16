@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 import requests
 import datetime
 import pymysql
@@ -16,13 +17,7 @@ conn = pymysql.connect(host='127.0.0.1', user='root', passwd='344126509', db='ya
 cur = conn.cursor()
 # ---------------------------------------------------------------
 
-chrome_opt = webdriver.ChromeOptions()
-prefs = {'profile.managed_default_content_settings.images': 2}
-chrome_opt.add_experimental_option('prefs', prefs)
-chrome_opt.add_argument('--headless')
-chrome_opt.add_argument('--disable-gpu')
-driver = webdriver.Chrome(chrome_options=chrome_opt)
-driver.set_page_load_timeout(40)  # 设置页面最长加载时间为40s
+
 """
 #--------------------------------------------------------------------
 dcap = dict(DesiredCapabilities.PHANTOMJS)
@@ -224,12 +219,12 @@ def get_all_start_stamp():
             driver.get_screenshot_as_file('defeat.png')
             print(e)
 
-def do_the_task(task_datetime):
+def do_the_task(task_datetime,driver,cookies, crumb, end_date):
     task_dir = '/home/david/codes_historical_data/'+task_datetime
 
     codes = pd.read_csv('/home/david/codes.csv')
     codes_stamp = pd.read_csv('/home/david/codes_start_stamp.csv')
-    cookies, crumb, end_date = get_driver_info(driver = driver)
+
     total = len(codes.codes)
     os.makedirs(task_dir)
     n = 1
@@ -238,18 +233,19 @@ def do_the_task(task_datetime):
         succ = round((n/total),3)*100
         cur.execute("UPDATE main_task SET success=%s;", succ)
         cur.connection.commit()
-
+        if c == 'AAOI':
+            break
         try:
             stamp = codes_stamp[codes_stamp.code == c]
             temp = len(stamp.index) / len(stamp.index)  # 测试如果长度为零则报错
             for s in stamp.start_stamp:
                 # print(s)
                 stamp = s
-                print('不需要重新获取')
+                print('no need new get')
                 break
 
         except Exception as e :#如果文件内没有start_stamp
-            print('需要重新获取')
+            print('need new get')
             try:
                 stamp = get_code_start_date(driver,c)
                 codes_stamp.loc[len(codes_stamp)] = [c, stamp]
@@ -275,10 +271,25 @@ while True:
     cur.execute("SELECT date_time FROM main_task WHERE status=%s", '正在爬取')
     task = cur.fetchall()[0:100]
     if len(task) != 0:
+        #-------------------------
+        try:#初始化浏览器
+            chrome_opt = webdriver.ChromeOptions()
+            prefs = {'profile.managed_default_content_settings.images': 2}
+            chrome_opt.add_experimental_option('prefs', prefs)
+            chrome_opt.add_argument('--headless')
+            chrome_opt.add_argument('--disable-gpu')
+            driver = webdriver.Chrome(chrome_options=chrome_opt)
+            driver.set_page_load_timeout(40)  # 设置页面最长加载时间为40s
+            cookies, crumb, end_date = get_driver_info(driver=driver)
+        except:
+            driver.quit()
+            continue
+        #-------------------------
         print(str(task[0][0]))
-        do_the_task(str(task[0][0]))
+        do_the_task(str(task[0][0]),driver=driver,cookies=cookies,crumb=crumb, end_date=end_date)
         cur.execute("UPDATE main_task SET status=%s;",'已完成')
         cur.connection.commit()
+        driver.quit()
         continue
 
     else:
