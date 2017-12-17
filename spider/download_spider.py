@@ -262,13 +262,12 @@ def do_the_task(task_datetime,driver,cookies, crumb, end_date):
                 codes_stamp.to_csv('/home/david/codes_start_stamp.csv',index=False)
             except Exception as e :
                 print(e)
-                if 'Message: no such session' in str(e):
+                if 'Message: no such session' in str(e) or 'refused' in str(e):
                     try:
                         driver.quit()
                     except:
                         pass
                     driver, cookies, crumb, end_date = get_driver_info()
-                    pass
                 else:
                     pass
 
@@ -276,13 +275,14 @@ def do_the_task(task_datetime,driver,cookies, crumb, end_date):
 
 
         url = 'https://query1.finance.yahoo.com/v7/finance/download/' + c + '?period1='+str(stamp)+'&period2='+str(end_date)+'&interval=1d&events=history&crumb='+str(crumb)
-        print(url)
+        #print(url)
         #cookies = get_driver_cookies(driver)  # 获取cookies
         try:
             r = requests.get(url, cookies=cookies)
             with open(task_dir + '/' + c + ".csv", "wb") as code:
                 code.write(r.content)
             time.sleep(1)
+            print('download success')
         except:
             pass
     dir_to_zip(task_dir)
