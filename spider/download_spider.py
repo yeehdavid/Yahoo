@@ -242,7 +242,7 @@ def do_the_task(task_datetime,driver,cookies, crumb, end_date):
     for c in codes.codes:
         n+=1
         succ = round((n/total),3)*100
-        cur.execute("UPDATE main_task SET success=%s where date_time=%s;", (succ,end_date))
+        cur.execute("UPDATE main_task SET success=%s where date_time=%s;", (succ,str(end_date)))
         cur.connection.commit()
         
         try:
@@ -263,6 +263,10 @@ def do_the_task(task_datetime,driver,cookies, crumb, end_date):
             except Exception as e :
                 print(e)
                 if 'Message: no such session' in str(e):
+                    try:
+                        driver.quit()
+                    except:
+                        pass
                     driver, cookies, crumb, end_date = get_driver_info()
                     pass
                 else:
