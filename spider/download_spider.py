@@ -257,7 +257,7 @@ def do_the_task(task_datetime,driver,cookies, crumb, end_date):
                 if 'NaN-NaN' in str(e):
                     pass
                 else:
-                    break
+                    pass
 
                 continue
 
