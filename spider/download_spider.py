@@ -278,9 +278,10 @@ def do_the_task(task_datetime,driver,cookies, crumb, end_date):
 #get_all_start_stamp()
 while True:
     time.sleep(10)
-    cur.execute("SELECT date_time FROM main_task WHERE status=%s", '正在爬取')
+    cur.execute("SELECT date_time FROM main_task WHERE status=%s", 0)
     task = cur.fetchall()[0:100]
     if len(task) != 0:
+        print('has 0')
         #-------------------------
         try:#初始化浏览器
             chrome_opt = webdriver.ChromeOptions()
@@ -292,6 +293,7 @@ while True:
             driver.set_page_load_timeout(40)  # 设置页面最长加载时间为40s
             cookies, crumb, end_date = get_driver_info(driver=driver)
         except:
+            print('can not init chrome')
             try:
                 driver.quit()
             except:
@@ -300,7 +302,7 @@ while True:
         #-------------------------
         print(str(task[0][0]))
         do_the_task(str(task[0][0]),driver=driver,cookies=cookies,crumb=crumb, end_date=end_date)
-        cur.execute("UPDATE main_task SET status=%s;",'已完成')
+        cur.execute("UPDATE main_task SET status=%s;",1)
         cur.connection.commit()
         driver.quit()
         continue

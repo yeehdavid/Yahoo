@@ -28,7 +28,7 @@ def upload(request):
         datetime_ = datetime.datetime.now()
         conn = pymysql.connect(host='127.0.0.1', user='root', passwd='344126509', db='yahoo', charset='utf8')
         cur = conn.cursor()
-        cur.execute("INSERT INTO main_task (created_time, status, total, success, date_time) VALUES (%s,%s,%s,%s,%s)",(datetime_, '正在爬取',0, int(0),str(datetime_).replace(' ','')))
+        cur.execute("INSERT INTO main_task (created_time, status, success, date_time) VALUES (%s,%s,%s,%s)",(datetime_, 0, int(0),str(datetime_).replace(' ','')))
         cur.connection.commit()
         os.makedirs('/home/david/codes_historical_data/'+str(datetime_).replace(' ',''))
         #-------------------------------
