@@ -293,7 +293,9 @@ while True:
             driver.set_page_load_timeout(40)  # 设置页面最长加载时间为40s
             cookies, crumb, end_date = get_driver_info(driver=driver)
         except Exception as e :
+
             print('can not init chrome')
+            print(e)
             try:
                 driver.quit()
             except:
