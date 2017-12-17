@@ -112,7 +112,7 @@ def get_driver_info(driver, code='AAPL'):
         pass
 
     # driver.find_element_by_xpath('//*[@id="Col1-1-HistoricalDataTable-Proxy"]/section/div[1]/div[1]/button').click()#找到Apply按钮并且点击
-    time.sleep(5)
+    time.sleep(3)
     hr = driver.find_element_by_xpath(
         '//*[@id="Col1-1-HistoricalDataTable-Proxy"]/section/div[1]/div[2]/span[2]/a').get_attribute(
         'href')  # 找到下载按钮并且点击
@@ -292,7 +292,7 @@ while True:
             driver = webdriver.Chrome(chrome_options=chrome_opt)
             driver.set_page_load_timeout(40)  # 设置页面最长加载时间为40s
             cookies, crumb, end_date = get_driver_info(driver=driver)
-        except:
+        except Exception as e :
             print('can not init chrome')
             try:
                 driver.quit()
