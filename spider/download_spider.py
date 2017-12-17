@@ -254,7 +254,7 @@ def do_the_task(task_datetime,driver,cookies, crumb, end_date):
                 codes_stamp.to_csv('/home/david/codes_start_stamp.csv',index=False)
             except Exception as e :
                 print(e)
-                if 'NaN-NaN' in e:
+                if 'NaN-NaN' in str(e):
                     pass
                 else:
                     break
