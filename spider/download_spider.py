@@ -242,7 +242,7 @@ def do_the_task(task_datetime,driver,cookies, crumb, end_date):
     for c in codes.codes:
         n+=1
         succ = round((n/total),3)*100
-        cur.execute("UPDATE main_task SET success=%s where date_time=%s;", (succ,str(end_date)))
+        cur.execute("UPDATE main_task SET success=%s where date_time=%s;", (succ,str(task_datetime)))
         cur.connection.commit()
         
         try:
