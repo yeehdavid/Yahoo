@@ -77,7 +77,15 @@ def date_to_stamp(date):
     return timestamp
 
 
-def get_driver_info(driver, code='AAPL'):
+def get_driver_info(code='AAPL'):
+    chrome_opt = webdriver.ChromeOptions()
+    prefs = {'profile.managed_default_content_settings.images': 2}
+    chrome_opt.add_experimental_option('prefs', prefs)
+    chrome_opt.add_argument('--headless')
+    chrome_opt.add_argument('--disable-gpu')
+    driver = webdriver.Chrome(chrome_options=chrome_opt)
+    driver.set_page_load_timeout(40)  # 设置页面最长加载时间为40s
+
     driver.get('https://finance.yahoo.com/quote/' + code + '/history?p=' + code)
     time.sleep(1)
     driver.find_element_by_id('Col1-1-HistoricalDataTable-Proxy').find_element_by_tag_name('svg').click()  # 找到小箭头
@@ -119,7 +127,7 @@ def get_driver_info(driver, code='AAPL'):
     crumb = hr[hr.index('crumb') + 6:]
     cookies = get_driver_cookies(driver)
     end_date = date_to_stamp(end_date)
-    return  cookies, crumb, end_date
+    return  driver, cookies, crumb, end_date
 
 def download_this_code(code, driver):
 
@@ -234,7 +242,7 @@ def do_the_task(task_datetime,driver,cookies, crumb, end_date):
     for c in codes.codes:
         n+=1
         succ = round((n/total),3)*100
-        cur.execute("UPDATE main_task SET success=%s;", succ)
+        cur.execute("UPDATE main_task SET success=%s where date_time=%s;", (succ,end_date))
         cur.connection.commit()
         
         try:
@@ -254,7 +262,8 @@ def do_the_task(task_datetime,driver,cookies, crumb, end_date):
                 codes_stamp.to_csv('/home/david/codes_start_stamp.csv',index=False)
             except Exception as e :
                 print(e)
-                if 'NaN-NaN' in str(e):
+                if 'Message: no such session' in str(e):
+                    driver, cookies, crumb, end_date = get_driver_info()
                     pass
                 else:
                     pass
@@ -284,14 +293,8 @@ while True:
         print('has 0')
         #-------------------------
         try:#初始化浏览器
-            chrome_opt = webdriver.ChromeOptions()
-            prefs = {'profile.managed_default_content_settings.images': 2}
-            chrome_opt.add_experimental_option('prefs', prefs)
-            chrome_opt.add_argument('--headless')
-            chrome_opt.add_argument('--disable-gpu')
-            driver = webdriver.Chrome(chrome_options=chrome_opt)
-            driver.set_page_load_timeout(40)  # 设置页面最长加载时间为40s
-            cookies, crumb, end_date = get_driver_info(driver=driver)
+
+            driver, cookies, crumb, end_date = get_driver_info()
         except Exception as e :
 
             print('can not init chrome')
