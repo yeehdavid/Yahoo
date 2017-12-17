@@ -224,9 +224,12 @@ def do_the_task(task_datetime,driver,cookies, crumb, end_date):
 
     codes = pd.read_csv('/home/david/codes.csv')
     codes_stamp = pd.read_csv('/home/david/codes_start_stamp.csv')
-
     total = len(codes.codes)
-    os.makedirs(task_dir)
+
+    try:
+        os.makedirs(task_dir)
+    except:
+        pass
     n = 1
     for c in codes.codes:
         n+=1
@@ -257,10 +260,13 @@ def do_the_task(task_datetime,driver,cookies, crumb, end_date):
         url = 'https://query1.finance.yahoo.com/v7/finance/download/' + c + '?period1='+str(stamp)+'&period2='+str(end_date)+'&interval=1d&events=history&crumb='+str(crumb)
         print(url)
         #cookies = get_driver_cookies(driver)  # 获取cookies
-        r = requests.get(url, cookies=cookies)
-        with open(task_dir + '/' + c + ".csv", "wb") as code:
-            code.write(r.content)
-        time.sleep(1)
+        try:
+            r = requests.get(url, cookies=cookies)
+            with open(task_dir + '/' + c + ".csv", "wb") as code:
+                code.write(r.content)
+            time.sleep(1)
+        except:
+            pass
     dir_to_zip(task_dir)
 
 
@@ -281,7 +287,10 @@ while True:
             driver.set_page_load_timeout(40)  # 设置页面最长加载时间为40s
             cookies, crumb, end_date = get_driver_info(driver=driver)
         except:
-            driver.quit()
+            try:
+                driver.quit()
+            except:
+                pass
             continue
         #-------------------------
         print(str(task[0][0]))
