@@ -267,15 +267,18 @@ def do_the_task(task_datetime,driver,cookies, crumb, end_date):
                         driver.quit()
                     except:
                         pass
-                    driver, cookies, crumb, end_date = get_driver_info()
+                    try:
+                        driver, cookies, crumb, end_date = get_driver_info()
+                    except:
+                        pass
                 else:
                     pass
 
-                continue
+
 
 
         url = 'https://query1.finance.yahoo.com/v7/finance/download/' + c + '?period1='+str(stamp)+'&period2='+str(end_date)+'&interval=1d&events=history&crumb='+str(crumb)
-        #print(url)
+        print(url)
         #cookies = get_driver_cookies(driver)  # 获取cookies
         try:
             r = requests.get(url, cookies=cookies)
