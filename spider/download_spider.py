@@ -276,9 +276,11 @@ def do_the_task(task_datetime,driver,cookies, crumb, end_date):
 
 
 
+        if '.' in str(stamp):
+            stamp = str(stamp)[0:-2]
 
         url = 'https://query1.finance.yahoo.com/v7/finance/download/' + c + '?period1='+str(stamp)+'&period2='+str(end_date)+'&interval=1d&events=history&crumb='+str(crumb)
-        print(url)
+
         #cookies = get_driver_cookies(driver)  # 获取cookies
         try:
             r = requests.get(url, cookies=cookies)
