@@ -255,6 +255,7 @@ def do_the_task(task_datetime,driver,cookies, crumb, end_date):
                 break
 
         except Exception as e :#如果文件内没有start_stamp
+            stamp=''
             print('need new get')
             try:
                 stamp = get_code_start_date(driver,c)
@@ -274,6 +275,7 @@ def do_the_task(task_datetime,driver,cookies, crumb, end_date):
                 else:
                     pass
 
+                continue
 
 
         if '.' in str(stamp):
