@@ -201,7 +201,7 @@ def get_code_start_date(driver,code):
 
 #print(get_driver_info(driver))
 
-
+"""
 def get_all_start_stamp():
     codes = pd.read_csv('/home/david/codes.csv')
     for c in codes.codes:
@@ -226,7 +226,7 @@ def get_all_start_stamp():
         except Exception as e:
             driver.get_screenshot_as_file('defeat.png')
             print(e)
-
+"""
 def do_the_task(task_datetime,driver,cookies, crumb, end_date):
     task_dir = '/home/david/codes_historical_data/'+task_datetime
 
@@ -297,6 +297,7 @@ def do_the_task(task_datetime,driver,cookies, crumb, end_date):
 while True:
     time.sleep(10)
     cur.execute("SELECT date_time FROM main_task WHERE status=%s", 0)
+    cur.connection.commit()
     task = cur.fetchall()[0:100]
     if len(task) != 0:
         print('has 0')

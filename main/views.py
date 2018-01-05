@@ -32,8 +32,8 @@ def upload(request):
         cur.connection.commit()
         os.makedirs('/home/david/codes_historical_data/'+str(datetime_).replace(' ',''))
         #-------------------------------
-        task = Task.objects.all().order_by('-created_time')
-        return render(request, 'index.html', context={'tasks': task})
+
+        return HttpResponse("任务创建成功！")
 
 
 def download(request):
