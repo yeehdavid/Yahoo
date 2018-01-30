@@ -321,12 +321,15 @@ while True:
                 pass
             continue
         #-------------------------
-        print(str(task[0][0]))
-        do_the_task(str(task[0][0]),driver=driver,cookies=cookies,crumb=crumb, end_date=end_date)
-        cur.execute("UPDATE main_task SET status=%s;",1)
-        cur.connection.commit()
-        driver.quit()
-        continue
+        try:
+            print(str(task[0][0]))
+            do_the_task(str(task[0][0]),driver=driver,cookies=cookies,crumb=crumb, end_date=end_date)
+            cur.execute("UPDATE main_task SET status=%s;",1)
+            cur.connection.commit()
+            driver.quit()
+            continue
+        except:
+            pass
 
     else:
         pass
