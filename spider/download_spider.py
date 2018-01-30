@@ -297,6 +297,8 @@ def do_the_task(task_datetime,driver,cookies, crumb, end_date):
 
 #get_all_start_stamp()
 while True:
+    os.system('killall -9 chrome')
+    os.system('killall -9 chromedriver')
     time.sleep(10)
     cur.execute("SELECT date_time FROM main_task WHERE status=%s", 0)
     cur.connection.commit()
