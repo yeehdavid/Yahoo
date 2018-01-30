@@ -265,6 +265,8 @@ def do_the_task(task_datetime,driver,cookies, crumb, end_date):
                 print(e)
                 if 'Message: no such session' in str(e) or 'refused' in str(e):
                     try:
+                        os.system('killall -9 chrome')
+                        os.system('killall -9 chromedriver')
                         driver.quit()
                     except:
                         pass
